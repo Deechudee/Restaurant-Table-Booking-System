@@ -1,4 +1,21 @@
 import { useState } from "react";
+
+import {
+  Paper,
+  TextInput,
+  PasswordInput,
+  Button,
+  Title,
+  Text,
+  Container,
+  BackgroundImage,
+  Overlay,
+  Box,
+} from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+
+import { Link } from "react-router-dom";
+
 import API from "../services/api";
 
 function Register() {
@@ -6,7 +23,6 @@ function Register() {
     name: "",
     email: "",
     password: "",
-    role: "customer",
   });
 
   const handleChange = (e) => {
@@ -20,79 +36,180 @@ function Register() {
     e.preventDefault();
 
     try {
-      const res = await API.post(
+      await API.post(
         "/auth/register",
         formData
       );
 
-      console.log(res.data);
+      notifications.show({
+        title: "Success",
+        message:
+          "Account created successfully",
+        color: "green",
+      });
 
-      alert("Registration successful!");
+      window.location.href = "/login";
     } catch (error) {
-        console.log(error);
-        alert(
-            error.response?.data?.message ||
-            "Registration failed"
-        );
+      console.log(error);
+
+      notifications.show({
+        title: "Error",
+        message: "Registration failed",
+        color: "red",
+      });
     }
   };
 
   return (
-    <div>
-      <h1>Register</h1>
+    <BackgroundImage
+      src="https://images.unsplash.com/photo-1514933651103-005eec06c04b"
+      style={{
+        minHeight: "100vh",
+      }}
+    >
+      <Overlay
+        color="#000"
+        opacity={0.7}
+        zIndex={0}
+      />
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          onChange={handleChange}
-        />
-
-        <br />
-        <br />
-
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-        />
-
-        <br />
-        <br />
-
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
-        />
-
-        <br />
-        <br />
-
-        <select
-          name="role"
-          onChange={handleChange}
+      <Container
+        size={450}
+        style={{
+          position: "relative",
+          zIndex: 2,
+          paddingTop: "60px",
+        }}
+      >
+        <Title
+          ta="center"
+          c="white"
+          fw={800}
+          style={{
+            fontSize: "42px",
+          }}
         >
-          <option value="customer">
-            Customer
-          </option>
+          DineFlow 🍽️
+        </Title>
 
-          <option value="owner">
-            Restaurant Owner
-          </option>
-        </select>
+        <Text
+          ta="center"
+          c="gray.3"
+          mt="sm"
+        >
+          Discover and reserve tables at premium restaurants
+        </Text>
 
-        <br />
-        <br />
+        <Paper
+          shadow="xl"
+          radius="lg"
+          p="xl"
+          mt="xl"
+          style={{
+            backdropFilter: "blur(12px)",
+            background:
+              "rgba(255,255,255,0.12)",
+            border:
+              "1px solid rgba(255,255,255,0.2)",
+          }}
+        >
+          <form onSubmit={handleSubmit}>
+            <TextInput
+              label="Full Name"
+              placeholder="Enter your name"
+              name="name"
+              onChange={handleChange}
+              required
+              styles={{
+                input: {
+                  background:
+                    "rgba(255,255,255,0.1)",
+                  color: "white",
+                  border:
+                    "1px solid rgba(255,255,255,0.2)",
+                },
+                label: {
+                  color: "white",
+                },
+              }}
+            />
 
-        <button type="submit">
-          Register
-        </button>
-      </form>
-    </div>
+            <TextInput
+              mt="md"
+              label="Email"
+              placeholder="Enter your email"
+              name="email"
+              onChange={handleChange}
+              required
+              styles={{
+                input: {
+                  background:
+                    "rgba(255,255,255,0.1)",
+                  color: "white",
+                  border:
+                    "1px solid rgba(255,255,255,0.2)",
+                },
+                label: {
+                  color: "white",
+                },
+              }}
+            />
+
+            <PasswordInput
+              mt="md"
+              label="Password"
+              placeholder="Create password"
+              name="password"
+              onChange={handleChange}
+              required
+              styles={{
+                input: {
+                  background:
+                    "rgba(255,255,255,0.1)",
+                  color: "white",
+                  border:
+                    "1px solid rgba(255,255,255,0.2)",
+                },
+                label: {
+                  color: "white",
+                },
+              }}
+            />
+
+            <Button
+              fullWidth
+              mt="xl"
+              size="md"
+              radius="xl"
+              color="orange"
+              type="submit"
+            >
+              Create Account
+            </Button>
+          </form>
+
+          <Box mt="lg">
+            <Text
+              ta="center"
+              c="gray.2"
+            >
+              Already have an account?{" "}
+              <Text
+                component={Link}
+                to="/login"
+                c="yellow"
+                fw={700}
+                style={{
+                  textDecoration: "none",
+                }}
+              >
+                Login
+              </Text>
+            </Text>
+          </Box>
+        </Paper>
+      </Container>
+    </BackgroundImage>
   );
 }
 

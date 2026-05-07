@@ -41,7 +41,7 @@ function Navbar() {
           textDecoration: "none",
         }}
       >
-        TableBook
+        DineFlow
       </Text>
 
       {/* NAV LINKS */}

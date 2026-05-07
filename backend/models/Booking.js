@@ -43,7 +43,7 @@ const bookingSchema = new mongoose.Schema(
     },
 
     contactNumber: {
-      type: String,
+      type: Number,
       required: true,
     },
   },
