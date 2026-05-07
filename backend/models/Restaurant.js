@@ -57,7 +57,7 @@ const restaurantSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
-
+    
     address: {
       type: String,
       required: true,
@@ -82,6 +82,14 @@ const restaurantSchema = new mongoose.Schema(
       type: String,
       maxlength: 500,
     },
+    
+    menu: [
+      {
+        itemName: String,
+        price: Number,
+        image: String,
+      },
+    ],
 
     rating: {
       type: Number,

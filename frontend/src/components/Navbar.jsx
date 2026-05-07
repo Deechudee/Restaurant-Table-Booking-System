@@ -1,70 +1,125 @@
+import {
+  Container,
+  Group,
+  Button,
+  Text,
+} from "@mantine/core";
+
 import { Link } from "react-router-dom";
 
-import { useContext } from "react";
-
-import { AuthContext } from "../context/AuthContext";
-
 function Navbar() {
-  const { user, logout } =
-    useContext(AuthContext);
+  const token =
+    localStorage.getItem("token");
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+
+    window.location.href = "/";
+  };
 
   return (
-    <nav
+    <Container
+      fluid
+      py="md"
+      px="xl"
       style={{
-        padding: "15px",
         display: "flex",
         justifyContent: "space-between",
-        background: "#222",
-        color: "white",
+        alignItems: "center",
+        backgroundColor: "black",
       }}
     >
-      {/* Logo */}
-      <h2>TableReserve</h2>
+      {/* LOGO */}
 
-      {/* Navigation */}
-      <div
+      <Text
+        component={Link}
+        to="/"
+        size="xl"
+        fw={700}
+        c="orange"
         style={{
-          display: "flex",
-          gap: "15px",
-          alignItems: "center",
+          textDecoration: "none",
         }}
       >
-        <Link
+        TableBook
+      </Text>
+
+      {/* NAV LINKS */}
+
+      <Group>
+        {/* HOME */}
+
+        <Button
+          component={Link}
           to="/"
-          style={{ color: "white" }}
+          variant="subtle"
+          color="white"
         >
           Home
-        </Link>
+        </Button>
 
-        {!user ? (
+        {!token ? (
           <>
-            <Link
+            {/* LOGIN */}
+
+            <Button
+              component={Link}
               to="/login"
-              style={{ color: "white" }}
+              variant="subtle"
+              color="white"
+              
             >
               Login
-            </Link>
+            </Button>
 
-            <Link
+            {/* REGISTER */}
+
+            <Button
+              component={Link}
               to="/register"
-              style={{ color: "white" }}
+              color="orange"
+              radius="xl"
             >
               Register
-            </Link>
+            </Button>
           </>
         ) : (
           <>
-            <span>
-              Welcome, {user.name}
-            </span>
+            {/* MY BOOKINGS */}
 
-            <button onClick={logout}>
+            <Button
+              component={Link}
+              to="/my-bookings"
+              variant="subtle"
+              color="white"
+            >
+              My Bookings
+            </Button>
+
+            {/* RESTAURANTS */}
+
+            <Button
+              component={Link}
+              to="/restaurants"
+              variant="subtle"
+              color="white"
+            >
+              Restaurants
+            </Button>
+
+            {/* LOGOUT */}
+
+            <Button
+              color="red"
+              radius="xl"
+              onClick={handleLogout}
+            >
               Logout
-            </button>
+            </Button>
           </>
         )}
-      </div>
-    </nav>
+      </Group>
+    </Container>
   );
 }
 
