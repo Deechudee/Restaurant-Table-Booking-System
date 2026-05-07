@@ -137,30 +137,35 @@ function RestaurantDetails() {
               )}
             </SimpleGrid>
           </Tabs.Panel>
-            
+
           {/* REVIEWS */}
           <Tabs.Panel value="reviews" pt="md">
-            <Paper shadow="xs" p="md" mb="md">
-              <Text fw={600}>
-                ⭐ 4.8 - Priya
-              </Text>
-            
-              <Text c="dimmed">
-                Amazing food and ambience.
-              </Text>
-            </Paper>
-            
-            <Paper shadow="xs" p="md" mb="md">
-              <Text fw={600}>
-                ⭐ 4.5 - Rahul
-              </Text>
-            
-              <Text c="dimmed">
-                Loved the biryani and service.
-              </Text>
-            </Paper>
+            {Array.isArray(
+              restaurant.reviews
+            ) &&
+              restaurant.reviews.map(
+                (review, index) => (
+                  <Paper
+                    key={index}
+                    shadow="xs"
+                    p="md"
+                    mb="md"
+                  >
+                    <Text fw={600}>
+                      ⭐ {review.rating} -{" "}
+                      {review.userName}
+                    </Text>
+          
+                    <Text c="dimmed">
+                      {review.comment}
+                    </Text>
+                  </Paper>
+                )
+              )
+            }
           </Tabs.Panel>
-        </Tabs>
+        </Tabs>    
+        
 
         {/* Button */}
         <Button

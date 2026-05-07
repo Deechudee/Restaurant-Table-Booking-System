@@ -91,10 +91,13 @@ const restaurantSchema = new mongoose.Schema(
       },
     ],
 
-    rating: {
-      type: Number,
-      default: 4.5,
-    },
+    reviews: [
+      {
+        userName: String,
+        rating: Number,
+        comment: String,
+      },
+    ],
   },
   {
     timestamps: true,
