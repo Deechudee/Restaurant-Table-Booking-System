@@ -98,6 +98,13 @@ const restaurantSchema = new mongoose.Schema(
         comment: String,
       },
     ],
+
+    
+
+    availableSeats: {
+      type: Number,
+      default: 20,
+    },
   },
   {
     timestamps: true,

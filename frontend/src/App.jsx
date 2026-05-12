@@ -8,6 +8,11 @@ import Navbar from "./components/Navbar";
 import Restaurants from "./pages/Restaurants";
 import NewBooking from "./pages/NewBooking";
 import MyBookings from "./pages/MyBookings";
+import OwnerDashboard from "./pages/Owner/OwnerDashboard";
+import OwnerRestaurant from "./pages/Owner/OwnerRestaurants";
+import EditRestaurant from "./pages/Owner/EditRestaurant";
+import OwnerBookings from "./pages/Owner/OwnerBookings";
+
 
 function App() {
   return (
@@ -49,6 +54,28 @@ function App() {
           path="/my-bookings"
           element={<MyBookings />}
         />
+
+        <Route
+          path="/owner"
+          element={<OwnerDashboard />}
+        />
+
+        <Route
+          path="/owner/bookings"
+          element={<OwnerBookings />}
+        />
+
+        <Route
+          path="/owner/restaurants"
+          element={<OwnerRestaurant />}
+        />
+        <Route
+          path="/owner/edit/:id"
+          element={<EditRestaurant />}
+        />
+        
+
+
       </Routes>
     </>
   );

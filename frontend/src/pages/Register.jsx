@@ -11,6 +11,7 @@ import {
   BackgroundImage,
   Overlay,
   Box,
+  Checkbox,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
@@ -23,6 +24,7 @@ function Register() {
     name: "",
     email: "",
     password: "",
+    role: "customer",
   });
 
   const handleChange = (e) => {
@@ -175,7 +177,22 @@ function Register() {
                 },
               }}
             />
-
+            <Checkbox
+              mt="md"
+              label="Register as Restaurant Owner"
+              checked={
+                formData.role === "owner"
+              }
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  role:
+                    e.currentTarget.checked
+                      ? "owner"
+                      : "customer",
+                })
+              }
+            />
             <Button
               fullWidth
               mt="xl"

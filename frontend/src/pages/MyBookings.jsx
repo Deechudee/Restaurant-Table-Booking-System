@@ -91,7 +91,6 @@ function MyBookings() {
             </Text>
 
             <Badge
-              mt="md"
               color={
                 booking.bookingStatus ===
                 "Confirmed"
@@ -102,9 +101,7 @@ function MyBookings() {
                   : "yellow"
               }
             >
-              {
-                booking.bookingStatus
-              }
+              {booking.bookingStatus}
             </Badge>
           </Card>
         ))}

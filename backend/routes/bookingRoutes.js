@@ -8,6 +8,7 @@ const {
   getRestaurantBookings,
   updateBookingStatus,
   cancelBooking,
+  getOwnerBookings,
 } = require("../controllers/bookingController");
 
 const {
@@ -58,6 +59,13 @@ router.put(
   protect,
   ownerOnly,
   updateBookingStatus
+);
+
+router.get(
+  "/owner-bookings",
+  protect,
+  ownerOnly,
+  getOwnerBookings
 );
 
 module.exports = router;

@@ -1,13 +1,6 @@
 const Restaurant = require("../models/Restaurant");
 
-module.exports = {
-  getAllRestaurants,
-  getSingleRestaurant,
-  createRestaurant,
-  updateRestaurant,
-  deleteRestaurant,
-  getOwnerRestaurant,
-};
+
 
 // ===================================
 // Get All Restaurants
@@ -55,20 +48,36 @@ async function getSingleRestaurant(req, res) {
 // ===================================
 // Get Logged-in Owner Restaurant
 // ===================================
-async function getOwnerRestaurant(req, res) {
+async function getOwnerRestaurants(
+  req,
+  res
+) {
   try {
-    const restaurant = await Restaurant.findOne({
-      owner: req.user.id,
+
+    const restaurants =
+      await Restaurant.find({
+        owner: req.user.id,
+      });
+
+    if (!restaurants) {
+      return res.status(404).json({
+        message:
+          "Restaurant not found",
+      });
+    }
+
+    res.status(200).json({
+      restaurants,
     });
 
-    res.status(200).json(restaurant);
   } catch (error) {
+
     res.status(500).json({
-      message: error.message,
+      message:
+        error.message,
     });
   }
 }
-
 // ===================================
 // Create Restaurant
 // ===================================
@@ -164,3 +173,12 @@ async function deleteRestaurant(req, res) {
     });
   }
 }
+
+module.exports = {
+  getAllRestaurants,
+  getSingleRestaurant,
+  createRestaurant,
+  updateRestaurant,
+  deleteRestaurant,
+  getOwnerRestaurants,
+};

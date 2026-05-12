@@ -8,7 +8,7 @@ const {
   createRestaurant,
   updateRestaurant,
   deleteRestaurant,
-  getOwnerRestaurant,
+  getOwnerRestaurants,
 } = require("../controllers/restaurantController");
 
 const {
@@ -38,10 +38,10 @@ router.get(
 
 // Get Logged-in Owner Restaurant
 router.get(
-  "/owner/my-restaurant",
+  "/owner/my-restaurants",
   protect,
   ownerOnly,
-  getOwnerRestaurant
+  getOwnerRestaurants
 );
 
 // Create Restaurant

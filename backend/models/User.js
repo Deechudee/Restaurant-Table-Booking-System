@@ -31,6 +31,16 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
 
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+
+    isOwner: {
+      type: Boolean,
+      default: false,
+    },
+
     profileImage: {
       type: String,
       default:

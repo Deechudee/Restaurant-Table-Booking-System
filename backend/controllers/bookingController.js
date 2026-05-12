@@ -1,13 +1,7 @@
 const Booking = require("../models/Booking");
 const Restaurant = require("../models/Restaurant");
 
-module.exports = {
-  createBooking,
-  getUserBookings,
-  getRestaurantBookings,
-  updateBookingStatus,
-  cancelBooking,
-};
+
 
 // ==============================
 // Create Booking
@@ -111,35 +105,99 @@ async function getRestaurantBookings(req, res) {
   }
 }
 
-// ==============================
-// Update Booking Status
-// ==============================
-async function updateBookingStatus(req, res) {
+
+async function getOwnerBookings(
+  req,
+  res
+) {
+
   try {
-    const booking = await Booking.findById(req.params.id);
 
-    if (!booking) {
-      return res.status(404).json({
-        message: "Booking not found",
+    // FIND OWNER RESTAURANTS
+
+    const restaurants =
+      await Restaurant.find({
+        owner: req.user.id,
       });
-    }
 
-    booking.bookingStatus = req.body.bookingStatus;
+    // GET IDS
 
-    await booking.save();
+    const restaurantIds =
+      restaurants.map(
+        (restaurant) =>
+          restaurant._id
+      );
+
+    // FIND BOOKINGS
+
+    const bookings =
+      await Booking.find({
+        restaurant: {
+          $in: restaurantIds,
+        },
+      })
+      .populate(
+        "customer",
+        "name email"
+      )
+      .populate(
+        "restaurant",
+        "restaurantName"
+      );
 
     res.status(200).json({
       success: true,
-      message: "Booking updated",
-      booking,
+      bookings,
     });
+
   } catch (error) {
+
     res.status(500).json({
-      message: error.message,
+      success: false,
+      message:
+        error.message,
     });
   }
 }
 
+// ==============================
+// Update Booking Status
+// ==============================
+const updateBookingStatus =
+  async (req, res) => {
+
+    try {
+
+      const booking =
+        await Booking.findById(
+          req.params.id
+        );
+
+      if (!booking) {
+        return res.status(404).json({
+          message:
+            "Booking not found",
+        });
+      }
+
+      booking.bookingStatus =
+        req.body.bookingStatus;
+
+      await booking.save();
+
+      res.status(200).json({
+        success: true,
+        booking,
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message:
+          error.message,
+      });
+    }
+  };
 // ==============================
 // Cancel Booking
 // ==============================
@@ -172,3 +230,12 @@ async function cancelBooking(req, res) {
     });
   }
 }
+
+module.exports = {
+  createBooking,
+  getUserBookings,
+  getRestaurantBookings,
+  updateBookingStatus,
+  cancelBooking,
+  getOwnerBookings,
+};

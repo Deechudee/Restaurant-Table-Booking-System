@@ -43,6 +43,8 @@ function Login() {
         formData
       );
 
+      console.log(res.data);
+
       localStorage.setItem(
         "token",
         res.data.token
@@ -54,7 +56,11 @@ function Login() {
         color: "green",
       });
 
-      window.location.href = "/";
+      if (res.data.role === "owner") {
+        window.location.href = "/owner";
+      } else {
+        window.location.href = "/";
+      }
     } catch (error) {
       console.log(error);
 
