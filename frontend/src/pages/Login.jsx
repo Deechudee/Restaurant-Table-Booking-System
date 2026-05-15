@@ -45,10 +45,16 @@ function Login() {
 
       console.log(res.data);
 
+      // Persist auth token for protected owner/customer routes
       localStorage.setItem(
         "token",
         res.data.token
       );
+      localStorage.setItem(
+        "role",
+        res.data.user.role
+      );
+     
 
       notifications.show({
         title: "Success",

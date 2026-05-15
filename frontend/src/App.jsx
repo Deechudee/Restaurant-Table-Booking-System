@@ -12,6 +12,11 @@ import OwnerDashboard from "./pages/Owner/OwnerDashboard";
 import OwnerRestaurant from "./pages/Owner/OwnerRestaurants";
 import EditRestaurant from "./pages/Owner/EditRestaurant";
 import OwnerBookings from "./pages/Owner/OwnerBookings";
+import OwnerMenu from "./pages/Owner/OwnerMenu";
+import CreateRestaurant from "./pages/Owner/CreateRestaurant";
+import OwnerReviews from "./pages/Owner/OwnerReviews";
+import OwnerProfile from "./pages/Owner/OwnerProfile";
+
 
 
 function App() {
@@ -73,8 +78,32 @@ function App() {
           path="/owner/edit/:id"
           element={<EditRestaurant />}
         />
-        
 
+        
+        <Route
+          path="/owner/create-restaurant"
+          element={<CreateRestaurant />}
+        />
+
+        <Route
+          path="/owner/menu"
+          element={<OwnerMenu />}
+        />
+
+        <Route
+          path="/owner/dashboard"
+          element={<OwnerDashboard />}
+        />
+
+        <Route
+          path="/owner/profile"
+          element={<OwnerProfile />}
+        />
+
+        <Route
+          path="/owner/reviews"
+          element={<OwnerReviews />}
+        />
 
       </Routes>
     </>

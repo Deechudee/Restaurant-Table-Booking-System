@@ -9,6 +9,7 @@ const {
   updateRestaurant,
   deleteRestaurant,
   getOwnerRestaurants,
+  getDashboardStats,
 } = require("../controllers/restaurantController");
 
 const {
@@ -66,6 +67,13 @@ router.delete(
   protect,
   ownerOnly,
   deleteRestaurant
+);
+
+router.get(
+  "/dashboard-stats",
+  protect,
+  ownerOnly,
+  getDashboardStats
 );
 
 

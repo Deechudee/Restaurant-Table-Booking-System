@@ -56,6 +56,13 @@ app.use(
   require("./routes/bookingRoutes")
 );
 
+app.use(
+  "/api/reviews",
+  require("./routes/reviewRoutes")
+);
+
+
+
 // ======================================
 // 404 Route
 // ======================================

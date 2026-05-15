@@ -174,6 +174,115 @@ async function deleteRestaurant(req, res) {
   }
 }
 
+const Booking =
+  require("../models/Booking");
+
+async function getDashboardStats(
+  req,
+  res
+) {
+
+  try {
+
+    // OWNER RESTAURANTS
+
+    const restaurants =
+      await Restaurant.find({
+        owner: req.user.id,
+      });
+
+    const restaurantIds =
+      restaurants.map(
+        (restaurant) =>
+          restaurant._id
+      );
+
+    // TOTAL BOOKINGS
+
+    const totalBookings =
+      await Booking.countDocuments({
+        restaurant: {
+          $in: restaurantIds,
+        },
+      });
+
+    // PENDING BOOKINGS
+
+    const pendingBookings =
+      await Booking.countDocuments({
+        restaurant: {
+          $in: restaurantIds,
+        },
+
+        bookingStatus:
+          "Pending",
+      });
+
+    // AVERAGE RATING
+
+    let totalRatings = 0;
+
+    let totalReviews = 0;
+
+    restaurants.forEach(
+      (restaurant) => {
+      
+        (
+          restaurant.reviews || []
+        ).forEach(
+          (review) => {
+          
+            totalRatings +=
+              Number(
+                review.rating || 0
+              );
+            
+            totalReviews++;
+          }
+        );
+      }
+    );
+
+    const averageRating = totalReviews > 0
+      ? (totalRatings / totalReviews).toFixed(1)
+      : 0;
+
+    // If there are no restaurants, return safe zeros instead of computing on empty arrays
+    // (this also avoids edge-case crashes in case of missing fields)
+    if (!Array.isArray(restaurants)) {
+      return res.status(200).json({
+        totalRestaurants: 0,
+        totalBookings: 0,
+        pendingBookings: 0,
+        averageRating: 0,
+      });
+    }
+
+    res.status(200).json({
+      totalRestaurants:
+        restaurants.length,
+
+      totalBookings,
+
+      pendingBookings,
+
+      averageRating,
+    });
+
+  } catch (error) {
+
+    console.log(
+      "Dashboard Stats Error:",
+      error
+    );
+  
+    res.status(500).json({
+      message:
+        error.message,
+    });
+  }
+}
+
 module.exports = {
   getAllRestaurants,
   getSingleRestaurant,
@@ -181,4 +290,5 @@ module.exports = {
   updateRestaurant,
   deleteRestaurant,
   getOwnerRestaurants,
+  getDashboardStats,
 };

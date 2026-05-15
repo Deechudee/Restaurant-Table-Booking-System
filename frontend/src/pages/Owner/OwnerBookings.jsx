@@ -139,12 +139,18 @@ function OwnerBookings() {
             <Table.Tr>
 
               <Table.Th>
+                Restaurant
+              </Table.Th>
+
+              <Table.Th>
                 Customer
               </Table.Th>
 
               <Table.Th>
                 Date
               </Table.Th>
+
+
 
               <Table.Th>
                 Time
@@ -184,10 +190,18 @@ function OwnerBookings() {
 
                   <Table.Td>
                     {
+                      booking.restaurant
+                        ?.restaurantName
+                    }
+                  </Table.Td>
+
+                  <Table.Td>
+                    {
                       booking.customer
                         ?.name
                     }
                   </Table.Td>
+
 
                   <Table.Td>
                     {

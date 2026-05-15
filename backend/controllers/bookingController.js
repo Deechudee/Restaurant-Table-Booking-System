@@ -218,6 +218,27 @@ async function cancelBooking(req, res) {
       });
     }
 
+    // Enforce cancel policy: user can cancel only if it's more than 1 hour before booking
+    // bookingDate is stored as String (expected: YYYY-MM-DD)
+    // bookingTime is stored as String (expected: HH:mm or HH:mm:ss)
+    const { bookingDate, bookingTime } = booking;
+
+    if (bookingDate && bookingTime) {
+      const normalizedTime = bookingTime.length === 5 ? `${bookingTime}:00` : bookingTime; // HH:mm -> HH:mm:00
+      const bookingDateTime = new Date(`${bookingDate}T${normalizedTime}`);
+
+      if (!Number.isNaN(bookingDateTime.getTime())) {
+        const diffMs = bookingDateTime.getTime() - Date.now();
+        const oneHourMs = 60 * 60 * 1000;
+
+        if (diffMs <= oneHourMs) {
+          return res.status(400).json({
+            message: "You can only cancel at least 1 hour before the booking time.",
+          });
+        }
+      }
+    }
+
     await booking.deleteOne();
 
     res.status(200).json({
@@ -230,6 +251,7 @@ async function cancelBooking(req, res) {
     });
   }
 }
+
 
 module.exports = {
   createBooking,

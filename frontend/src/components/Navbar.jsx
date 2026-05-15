@@ -11,9 +11,12 @@ function Navbar() {
   const token =
     localStorage.getItem("token");
 
+  const role =
+    localStorage.getItem("role");
+
   const handleLogout = () => {
     localStorage.removeItem("token");
-
+    localStorage.removeItem("role");
     window.location.href = "/";
   };
 
@@ -84,39 +87,61 @@ function Navbar() {
             </Button>
           </>
         ) : (
-          <>
-            {/* MY BOOKINGS */}
-
-            <Button
-              component={Link}
-              to="/my-bookings"
-              variant="subtle"
-              color="white"
-            >
-              My Bookings
-            </Button>
-
-            {/* RESTAURANTS */}
-
-            <Button
-              component={Link}
-              to="/restaurants"
-              variant="subtle"
-              color="white"
-            >
-              Restaurants
-            </Button>
-
-            {/* LOGOUT */}
-
-            <Button
-              color="red"
-              radius="xl"
-              onClick={handleLogout}
-            >
-              Logout
-            </Button>
-          </>
+         <>
+           {role === "owner" ? (
+           
+             <>
+               <Button
+                 component={Link}
+                 to="/owner/dashboard"
+                 variant="subtle"
+                 color="white"
+               >
+                 Dashboard
+               </Button>
+           
+               <Button
+                 component={Link}
+                 to="/owner/profile"
+                 variant="subtle"
+                 color="white"
+               >
+                 Profile
+               </Button>
+             </>
+         
+           ) : (
+           
+             <>
+               <Button
+                 component={Link}
+                 to="/my-bookings"
+                 variant="subtle"
+                 color="white"
+               >
+                 My Bookings
+               </Button>
+           
+               <Button
+                 component={Link}
+                 to="/restaurants"
+                 variant="subtle"
+                 color="white"
+               >
+                 Restaurants
+               </Button>
+             </>
+         
+           )}
+         
+           <Button
+             color="red"
+             radius="xl"
+             onClick={handleLogout}
+           >
+             Logout
+           </Button>
+         </> 
         )}
       </Group>
     </Container>
