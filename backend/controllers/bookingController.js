@@ -12,10 +12,34 @@ async function createBooking(req, res) {
       restaurant,
       guestsCount,
       bookingDate,
-      bookingTime,
+      startTime,
+      endTime,
       specialRequest,
       contactNumber,
     } = req.body;
+
+    if (!restaurant || !bookingDate || !startTime || !endTime) {
+      return res.status(400).json({
+        message:
+          "restaurant, bookingDate, startTime, and endTime are required",
+      });
+    }
+
+    const parsedGuests = Number(guestsCount);
+    if (!Number.isFinite(parsedGuests)) {
+      return res.status(400).json({
+        message: "guestsCount must be a number",
+      });
+    }
+
+    const phoneStr = String(contactNumber || "").trim();
+    const digitsOnly = phoneStr.replace(/\D/g, "");
+    if (!digitsOnly || digitsOnly.length < 8) {
+      return res.status(400).json({
+        message:
+          "contactNumber must be provided with at least 8 digits",
+      });
+    }
 
     // Check restaurant exists
     const existingRestaurant = await Restaurant.findById(restaurant);
@@ -26,10 +50,81 @@ async function createBooking(req, res) {
       });
     }
 
-    // Validate guests count
-    if (guestsCount > existingRestaurant.maxGuests) {
+    // Validate guests count for this single booking
+    if (parsedGuests < 1 || parsedGuests > existingRestaurant.maxGuests) {
       return res.status(400).json({
-        message: `Maximum allowed guests is ${existingRestaurant.maxGuests}`,
+        message: `Guests must be between 1 and ${existingRestaurant.maxGuests}`,
+      });
+    }
+
+    // ==============================
+    // Dynamic time overlap + capacity
+    // Reject only if total overlapping guests exceed available capacity
+    // overlap condition: newStart < existingEnd && newEnd > existingStart
+    // ==============================
+
+    // Load existing bookings for this restaurant on the same date
+    // (Note: bookingDate is stored as string in YYYY-MM-DD format)
+    const sameDayBookings = await Booking.find({
+      restaurant,
+      bookingDate,
+    });
+
+    const toMinutes = (hhmm) => {
+      // supports HH:mm only
+      const [h, m] = String(hhmm).split(":").map(Number);
+      if (!Number.isFinite(h) || !Number.isFinite(m)) return null;
+      return h * 60 + m;
+    };
+
+    const newStartMins = toMinutes(startTime);
+    const newEndMins = toMinutes(endTime);
+
+
+    if (newStartMins === null || newEndMins === null) {
+      return res.status(400).json({
+        message: "Invalid startTime/endTime format. Use HH:mm.",
+      });
+    }
+
+    // if end <= start, treat as invalid range
+    if (newEndMins <= newStartMins) {
+      return res.status(400).json({
+        message: "Invalid time range: endTime must be after startTime.",
+      });
+    }
+
+    const overlappingBookings = sameDayBookings.filter((b) => {
+      // Support older documents that may have stored bookingTime instead of start/end.
+      // If we only have bookingTime, treat it as the start time and assume a 1-hour slot.
+      const existingStart = b.startTime || b.bookingTime;
+      const existingEnd = b.endTime || (b.bookingTime ? b.bookingTime : undefined);
+
+      const existingStartMins = toMinutes(existingStart);
+      let existingEndMins = toMinutes(existingEnd);
+
+      if (existingStartMins === null) return false;
+      if (existingEndMins === null) {
+        existingEndMins = existingStartMins + 60; // 1 hour fallback
+      }
+
+      // true overlap if newStart < existingEnd && newEnd > existingStart
+      return (
+        newStartMins < existingEndMins &&
+        newEndMins > existingStartMins
+      );
+    });
+
+    const totalOverlappingGuests = overlappingBookings.reduce((sum, b) => {
+      return sum + (Number(b.guestsCount) || 0);
+    }, 0);
+
+    const projectedGuests = totalOverlappingGuests + parsedGuests;
+
+    if (projectedGuests > existingRestaurant.availableSeats) {
+
+      return res.status(400).json({
+        message: `Capacity exceeded for this time range. Available: ${existingRestaurant.availableSeats}, requested overlapping: ${projectedGuests}`,
       });
     }
 
@@ -37,12 +132,14 @@ async function createBooking(req, res) {
     const booking = await Booking.create({
       restaurant,
       customer: req.user.id,
-      guestsCount,
+      guestsCount: parsedGuests,
       bookingDate,
-      bookingTime,
+      startTime,
+      endTime,
       specialRequest,
-      contactNumber,
+      contactNumber: digitsOnly,
     });
+
 
     res.status(201).json({
       success: true,
@@ -220,14 +317,15 @@ async function cancelBooking(req, res) {
 
     // Enforce cancel policy: user can cancel only if it's more than 1 hour before booking
     // bookingDate is stored as String (expected: YYYY-MM-DD)
-    // bookingTime is stored as String (expected: HH:mm or HH:mm:ss)
-    const { bookingDate, bookingTime } = booking;
+    // startTime/endTime are stored as String (expected: HH:mm)
+    const { bookingDate, startTime } = booking;
 
-    if (bookingDate && bookingTime) {
-      const normalizedTime = bookingTime.length === 5 ? `${bookingTime}:00` : bookingTime; // HH:mm -> HH:mm:00
+    if (bookingDate && startTime) {
+      const normalizedTime = startTime.length === 5 ? `${startTime}:00` : startTime;
       const bookingDateTime = new Date(`${bookingDate}T${normalizedTime}`);
 
       if (!Number.isNaN(bookingDateTime.getTime())) {
+
         const diffMs = bookingDateTime.getTime() - Date.now();
         const oneHourMs = 60 * 60 * 1000;
 

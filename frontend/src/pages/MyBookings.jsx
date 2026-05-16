@@ -49,14 +49,14 @@ function MyBookings() {
 
 
   const getBookingDateTime = (booking) => {
-    const { bookingDate, bookingTime } = booking || {};
-    if (!bookingDate || !bookingTime) return null;
+    const { bookingDate, startTime } = booking || {};
+    if (!bookingDate || !startTime) return null;
 
-    // bookingTime could be HH:mm or HH:mm:ss
+    // startTime could be HH:mm or HH:mm:ss
     const normalizedTime =
-      bookingTime.length === 5
-        ? `${bookingTime}:00`
-        : bookingTime;
+      startTime.length === 5
+        ? `${startTime}:00`
+        : startTime;
 
     const dt = new Date(
       `${bookingDate}T${normalizedTime}`
@@ -135,7 +135,7 @@ function MyBookings() {
               </Text>
 
               <Text>
-                ⏰ {booking.bookingTime}
+                ⏰ {booking.startTime} - {booking.endTime}
               </Text>
 
               <Text>
