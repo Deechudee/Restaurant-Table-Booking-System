@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+
 
 import API from "../services/api";
 
@@ -16,6 +17,8 @@ import {
 
 function NewBooking() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
 
   const [formData, setFormData] =
     useState({
@@ -36,12 +39,20 @@ function NewBooking() {
   const handleBooking = async (e) => {
     e.preventDefault();
 
-    try {
-      const token =
-        localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
+    if (!token) {
+      alert("Please login to book a table");
+      navigate("/login", { replace: true });
+      return;
+    }
+
+
+    try {
+      // Backend is protected; this is an extra client-side guard.
       await API.post(
        "/bookings",
+
        {
          restaurant: id,
      

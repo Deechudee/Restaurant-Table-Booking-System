@@ -340,7 +340,6 @@ function OwnerMenu() {
                         </Text>
                       </Card.Section>
                     ) : null}
-
                   </Card>
                 ))
               ) : (

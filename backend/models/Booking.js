@@ -26,10 +26,17 @@ const bookingSchema = new mongoose.Schema(
       required: true,
     },
 
-    bookingTime: {
+    // booking start/end times in "HH:mm" format
+    startTime: {
       type: String,
       required: true,
     },
+
+    endTime: {
+      type: String,
+      required: true,
+    },
+
 
     specialRequest: {
       type: String,

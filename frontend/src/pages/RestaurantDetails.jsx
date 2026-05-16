@@ -280,13 +280,14 @@ function RestaurantDetails() {
         {/* Button */}
         <Button
           component={Link}
-          to={`/restaurant/${restaurant._id}/book`}
+          to={localStorage.getItem("token") ? `/restaurant/${restaurant._id}/book` : "/login"}
           color="orange"
           fullWidth
           mt="xl"
         >
           Reserve a Table
         </Button>
+
       </Paper>
     </Container>
   );
