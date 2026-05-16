@@ -131,15 +131,23 @@ function OwnerMenu() {
 
   const handleUpsert = async () => {
     if (!selectedRestaurant) return;
-    if (!itemName.trim()) return;
 
     const currentMenu = menuItems || [];
 
+    // Option 1: manual add/update (requires name)
+    // Option 2: add/update by image only (name optional)
+    const hasName = !!itemName.trim();
+    const hasImage = !!image.trim();
+
+    // Require at least one of: itemName or image
+    if (!hasName && !hasImage) return;
+
     const newItem = {
-      itemName,
-      price,
-      image: image || undefined,
+      itemName: hasName ? itemName.trim() : undefined,
+      price: hasName ? price : undefined,
+      image: hasImage ? image.trim() : undefined,
     };
+
 
     const nextMenu =
       editingIndex !== null
@@ -205,27 +213,38 @@ function OwnerMenu() {
             </Title>
 
             <Stack>
-              <TextInput
-                label="Item name"
-                value={itemName}
-                onChange={(e) => setItemName(e.currentTarget.value)}
-                placeholder="e.g. Chicken Biryani"
-              />
+              <Group position="apart" align="flex-end">
+                <TextInput
+                  label="Item name"
+                  value={itemName}
+                  onChange={(e) =>
+                    setItemName(
+                      e.currentTarget.value
+                    )
+                  }
+                  placeholder="e.g. Chicken Biryani"
+                  styles={{ root: { flex: 1 } }}
+                />
 
-              <NumberInput
-                label="Price"
-                value={price}
-                min={0}
-                step={1}
-                onChange={(v) => setPrice(v || 0)}
-              />
+                <NumberInput
+                  label="Price"
+                  value={price}
+                  min={0}
+                  step={1}
+                  onChange={(v) =>
+                    setPrice(v || 0)
+                  }
+                  styles={{ root: { width: 160 } }}
+                />
+              </Group>
 
               <TextInput
-                label="Image URL (optional)"
+                label="Menu card image URL"
                 value={image}
                 onChange={(e) => setImage(e.currentTarget.value)}
-                placeholder="https://..."
+                placeholder="Paste image URL (you can add by image only)"
               />
+
 
               <Group position="apart" mt="sm">
                 <Button
@@ -267,9 +286,22 @@ function OwnerMenu() {
                   >
                     <Group position="apart" mb={8}>
                       <div>
-                        <Text fw={700}>{m.itemName}</Text>
-                        <Text c="dimmed">Price: {m.price}</Text>
+                        {m.itemName ? (
+                          <Text fw={700}>{m.itemName}</Text>
+                        ) : (
+                          <Text fw={700} c="dimmed">
+                            (No name)
+                          </Text>
+                        )}
+                        <Text c="dimmed">
+                          {typeof m.price === "number"
+                            ? `Price: ${m.price}`
+                            : m.price
+                              ? `Price: ${m.price}`
+                              : "Price: —"}
+                        </Text>
                       </div>
+
 
                       <Group spacing="xs">
                         <Button
@@ -291,10 +323,24 @@ function OwnerMenu() {
                     </Group>
 
                     {m.image ? (
-                      <Text mt="sm" c="dimmed" size="sm">
-                        Image: {m.image}
-                      </Text>
+                      <Card.Section mt="sm">
+                        <img
+                          src={m.image}
+                          alt={m.itemName || "Menu item"}
+                          style={{
+                            width: "100%",
+                            height: 120,
+                            objectFit: "cover",
+                            borderRadius: 8,
+                            display: "block",
+                          }}
+                        />
+                        <Text mt={8} c="dimmed" size="sm">
+                          {m.itemName ? "Image" : "Menu image"}
+                        </Text>
+                      </Card.Section>
                     ) : null}
+
                   </Card>
                 ))
               ) : (
