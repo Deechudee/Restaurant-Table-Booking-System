@@ -10,64 +10,20 @@ const {
   deleteRestaurant,
   getOwnerRestaurants,
   getDashboardStats,
-} = require("../controllers/restaurantController");
+} = require(
+  "../controllers/restaurantController"
+);
 
 const {
   protect,
   ownerOnly,
-} = require("../middleware/authMiddleware");
-
-// ======================================
-// Public Routes
-// ======================================
-
-// Get All Restaurants
-router.get(
-  "/",
-  getAllRestaurants
-);
-
-// Get Single Restaurant
-router.get(
-  "/:id",
-  getSingleRestaurant
+} = require(
+  "../middleware/authMiddleware"
 );
 
 // ======================================
-// Restaurant Owner Routes
+// OWNER ROUTES
 // ======================================
-
-// Get Logged-in Owner Restaurant
-router.get(
-  "/owner/my-restaurants",
-  protect,
-  ownerOnly,
-  getOwnerRestaurants
-);
-
-// Create Restaurant
-router.post(
-  "/",
-  protect,
-  ownerOnly,
-  createRestaurant
-);
-
-// Update Restaurant
-router.put(
-  "/:id",
-  protect,
-  ownerOnly,
-  updateRestaurant
-);
-
-// Delete Restaurant
-router.delete(
-  "/:id",
-  protect,
-  ownerOnly,
-  deleteRestaurant
-);
 
 router.get(
   "/dashboard-stats",
@@ -76,6 +32,58 @@ router.get(
   getDashboardStats
 );
 
+router.get(
+  "/owner/my-restaurants",
+  protect,
+  ownerOnly,
+  getOwnerRestaurants
+);
 
+// ======================================
+// PUBLIC ROUTES
+// ======================================
+
+router.get(
+  "/",
+  getAllRestaurants
+);
+
+router.get(
+  "/:id",
+  getSingleRestaurant
+);
+
+// ======================================
+// CREATE
+// ======================================
+
+router.post(
+  "/",
+  protect,
+  ownerOnly,
+  createRestaurant
+);
+
+// ======================================
+// UPDATE
+// ======================================
+
+router.put(
+  "/:id",
+  protect,
+  ownerOnly,
+  updateRestaurant
+);
+
+// ======================================
+// DELETE
+// ======================================
+
+router.delete(
+  "/:id",
+  protect,
+  ownerOnly,
+  deleteRestaurant
+);
 
 module.exports = router;

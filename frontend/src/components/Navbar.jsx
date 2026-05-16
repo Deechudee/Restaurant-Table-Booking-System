@@ -51,7 +51,7 @@ function Navbar() {
 
       <Group>
         {/* HOME */}
-
+        {role !== "owner" && (
         <Button
           component={Link}
           to="/"
@@ -60,6 +60,7 @@ function Navbar() {
         >
           Home
         </Button>
+        )}
 
         {!token ? (
           <>
