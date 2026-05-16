@@ -26,10 +26,16 @@ const bookingSchema = new mongoose.Schema(
       required: true,
     },
 
-    bookingTime: {
+    startTime: {
       type: String,
       required: true,
     },
+
+    endTime: {
+      type: String,
+      required: true,
+    },
+
 
     specialRequest: {
       type: String,
@@ -43,13 +49,19 @@ const bookingSchema = new mongoose.Schema(
     },
 
     contactNumber: {
-      type: Number,
+      // store digits-only phone as string to avoid issues with leading zeros
+      type: String,
       required: true,
+      trim: true,
     },
+
   },
   {
     timestamps: true,
   }
 );
 
+// Backward compatibility: schema now uses startTime/endTime.
+// bookingTime is deprecated but can still exist in older documents.
 module.exports = mongoose.model("Booking", bookingSchema);
+

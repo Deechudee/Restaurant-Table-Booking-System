@@ -20,7 +20,8 @@ function NewBooking() {
   const [formData, setFormData] =
     useState({
       date: "",
-      time: "",
+      startTime: "",
+      endTime: "",
       guests: 2,
       contactNumber: "",
       specialRequest: "",
@@ -51,8 +52,11 @@ function NewBooking() {
          bookingDate:
            formData.date,
      
-         bookingTime:
-           formData.time,
+         startTime:
+           formData.startTime,
+ 
+         endTime:
+           formData.endTime,
      
          specialRequest:
            formData.specialRequest,
@@ -93,9 +97,17 @@ function NewBooking() {
 
           <TextInput
             mt="md"
-            label="Time"
+            label="Start Time"
             type="time"
-            name="time"
+            name="startTime"
+            onChange={handleChange}
+          />
+
+          <TextInput
+            mt="md"
+            label="End Time"
+            type="time"
+            name="endTime"
             onChange={handleChange}
           />
 

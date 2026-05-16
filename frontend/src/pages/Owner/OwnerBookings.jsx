@@ -210,9 +210,7 @@ function OwnerBookings() {
                   </Table.Td>
 
                   <Table.Td>
-                    {
-                      booking.bookingTime
-                    }
+                    {booking.startTime} - {booking.endTime}
                   </Table.Td>
 
                   <Table.Td>
