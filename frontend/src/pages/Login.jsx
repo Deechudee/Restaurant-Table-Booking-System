@@ -15,6 +15,7 @@ import {
 
 import { notifications } from "@mantine/notifications";
 
+
 import { Link } from "react-router-dom";
 
 import API from "../services/api";
@@ -68,13 +69,25 @@ function Login() {
         window.location.href = "/";
       }
     } catch (error) {
-      console.log(error);
+    	console.log(error);
+
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "You are not registered. Please create an account.";
 
       notifications.show({
-        title: "Error",
-        message: "Invalid credentials",
+        title: "Login failed",
+        message,
         color: "red",
+        autoClose: 4000,
       });
+
+      // Debug: verify we reached the error handler and computed the message
+      // Force user-visible fallback if Mantine notifications aren't rendering
+      const el = document.getElementById("login-error-message");
+      if (el) el.textContent = message;
+
     }
   };
 
@@ -131,6 +144,13 @@ function Login() {
               "1px solid rgba(255,255,255,0.2)",
           }}
         >
+          <Text
+            id="login-error-message"
+            ta="center"
+            c="red"
+            fw={600}
+            mb="sm"
+          />
           <form onSubmit={handleSubmit}>
             <TextInput
               label="Email"

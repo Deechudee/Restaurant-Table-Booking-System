@@ -28,7 +28,7 @@ function Home() {
         const res = await API.get(
           "/restaurants"
         );
-
+        console.log(res.data);
         setRestaurants(res.data.restaurants);
       } catch (error) {
         console.log(error);
