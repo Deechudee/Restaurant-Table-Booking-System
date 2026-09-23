@@ -18,10 +18,15 @@ const app = express();
 // Middleware
 // ======================================
 
-app.use(cors({
-  origin:"https://restaurant-table-booking-system-i3zo4lyd3.vercel.app",
-  credentials:true
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://restaurant-table-booking-system-i3zo4lyd3.vercel.app"
+    ],
+    credentials: true
+  })
+);
 
 app.use(express.json());
 
